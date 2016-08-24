@@ -53,6 +53,7 @@ npm i react-resizable-box
 ## Props
 
 #### `width`: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+---
 
 
 The `width` property is used to set the width of a resizable component.   
