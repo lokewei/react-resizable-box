@@ -1,6 +1,6 @@
 # react-resizable-box
 
-Resizable component for React.
+Resizable component for React. (add parentScaled config)
 
 [![Build Status](https://img.shields.io/travis/bokuweb/react-resizable-box.svg?style=flat-square)](https://travis-ci.org/bokuweb/react-resizable-box)
 [![Version](https://img.shields.io/npm/v/react-resizable-box.svg?style=flat-square)](https://www.npmjs.com/package/react-resizable-box)

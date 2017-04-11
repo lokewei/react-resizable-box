@@ -65,6 +65,7 @@ export default class Resizable extends Component {
     grid: PropTypes.arrayOf(PropTypes.number),
     lockAspectRatio: PropTypes.bool.isRequired,
     extendsProps: PropTypes.object,
+    parentScale: PropTypes.number
   };
 
   static defaultProps = {
@@ -80,6 +81,7 @@ export default class Resizable extends Component {
     handleClass: {},
     grid: [1, 1],
     lockAspectRatio: false,
+    parentScale: 1
   }
 
   constructor(props) {
@@ -136,41 +138,45 @@ export default class Resizable extends Component {
   onMouseMove({ clientX, clientY }) {
     if (!this.state.isActive) return;
     const { direction, original, width, height } = this.state;
-    const { minWidth, maxWidth, minHeight, maxHeight, lockAspectRatio } = this.props;
+    const { minWidth, maxWidth, minHeight, maxHeight, lockAspectRatio, parentScale } = this.props;
     const ratio = original.height / original.width;
     let newWidth = original.width;
     let newHeight = original.height;
     if (/right/i.test(direction)) {
-      newWidth = original.width + clientX - original.x;
+      let deltaX = (clientX - original.x) / parentScale
+      newWidth = original.width + deltaX;
       const min = (minWidth < 0 || typeof minWidth === 'undefined') ? 0 : minWidth;
       const max = (maxWidth < 0 || typeof maxWidth === 'undefined') ? newWidth : maxWidth;
       newWidth = clamp(newWidth, min, max);
       newWidth = snap(newWidth, this.props.grid[0]);
     }
     if (/left/i.test(direction)) {
-      newWidth = original.width - clientX + original.x;
+      let deltaX = (original.x - clientX) / parentScale
+      newWidth = original.width + deltaX;
       const min = (minWidth < 0 || typeof minWidth === 'undefined') ? 0 : minWidth;
       const max = (maxWidth < 0 || typeof maxWidth === 'undefined') ? newWidth : maxWidth;
       newWidth = clamp(newWidth, min, max);
       newWidth = snap(newWidth, this.props.grid[0]);
     }
     if (/bottom/i.test(direction)) {
-      newHeight = original.height + clientY - original.y;
+      let deltaY = (clientY - original.y) / parentScale
+      newHeight = original.height + deltaY;
       const min = (minHeight < 0 || typeof minHeight === 'undefined') ? 0 : minHeight;
       const max = (maxHeight < 0 || typeof maxHeight === 'undefined') ? newHeight : maxHeight;
       newHeight = clamp(newHeight, min, max);
       newHeight = snap(newHeight, this.props.grid[1]);
     }
     if (/top/i.test(direction)) {
-      newHeight = original.height - clientY + original.y;
+      let deltaY = (original.y - clientY) / parentScale
+      newHeight = original.height + deltaY;
       const min = (minHeight < 0 || typeof minHeight === 'undefined') ? 0 : minHeight;
       const max = (maxHeight < 0 || typeof maxHeight === 'undefined') ? newHeight : maxHeight;
       newHeight = clamp(newHeight, min, max);
       newHeight = snap(newHeight, this.props.grid[1]);
     }
     if (lockAspectRatio) {
-      const deltaWidth = Math.abs(newWidth - original.width);
-      const deltaHeight = Math.abs(newHeight - original.height);
+      const deltaWidth = Math.abs(newWidth - original.width) / parentScale;
+      const deltaHeight = Math.abs(newHeight - original.height) / parentScale;
       newWidth = newHeight / ratio;
       newHeight = newWidth * ratio;
     }
